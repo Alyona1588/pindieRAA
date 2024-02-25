@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Словарик</title>
+        <link href="./style.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="container">
+            <div class="addWordForm">
+                <input
+                    type="text"
+                    id="englishWordInput"
+                    placeholder="Слово на английском"
+                />
+                <input
+                    type="text"
+                    id="russianWordInput"
+                    placeholder="Слово на русском"
+                />
+                <button id="addButton">Добавить слово</button>
+            </div>
+            <div id="wordsContainer"></div>
+        </div>
+        <script src="./biblioteka.js"></script>
+        <script src="./page.js"></script>
+        <script src="./data.js"></script>
+    </body>
+</html>
