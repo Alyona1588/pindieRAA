@@ -1,4 +1,1 @@
-# pindieRAA
- 
-Не могу понять почему не отображаются локальные картинки!!!
-например в banner.jsx
+# pindieRAA from react next.js
