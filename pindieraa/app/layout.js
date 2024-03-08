@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata = {
   title: "PindieRAA",
-  description: "Портал инди-игр от студентов Яндекс Практикума. Версия РАА",
+  description: "Портал инди-игр от студентов Яндекс Практикума. Made by Shuremanochka",
 };
 
 export default function RootLayout({ children }) {
