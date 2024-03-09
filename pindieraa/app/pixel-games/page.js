@@ -1,8 +1,12 @@
 import { getGamesByCategory } from "../data/data-utils";
 import { CardsList } from "../components/CardsList/CardsList";
+import { getNormalizedGamesDataByCategory } from "../api/api-utils";
+import { endpoints } from "../api/config";
 
-export default function Runners() {
-  const pixelsGames = getGamesByCategory("pixel");
+export default async function Pixels() {
+  const pixelsGames = await getNormalizedGamesDataByCategory(
+    endpoints.games,
+    "pixel");
 
   return (
     <main className="main">

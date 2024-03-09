@@ -1,8 +1,12 @@
 import { getGamesByCategory } from "../data/data-utils";
 import { CardsList } from "../components/CardsList/CardsList";
+import { getNormalizedGamesDataByCategory } from "../api/api-utils";
+import { endpoints } from "../api/config";
 
-export default function Runners() {
-  const TDSsGames = getGamesByCategory("TDS");
+export default async function Runners() {
+  const TDSsGames = await getNormalizedGamesDataByCategory(
+    endpoints.games,
+    "TDS");
 
   return (
     <main className="main">

@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 export const Footer = () => {
 
   const pathname = usePathname();
+  console.log("pathname из Хедера");
   console.log(pathname);
 
   return (
