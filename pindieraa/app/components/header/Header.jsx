@@ -1,14 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Styles from "./Header.module.css";
 import { Popup } from "../Popup/Popup";
 import { Overlay } from "../Overlay/Overlay";
 import { AuthForm } from "../AuthForm/AuthForm";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { endpoints } from "@/app/api/config";
+import { removeJWT, getJWT, getMe, isResponseOk } from "@/app/api/api-utils";
 
 export const Header = () => {
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const [popupIsOpened, setPopupIsOpened] = useState(false);
   const openPopup = () => {
     setPopupIsOpened(true);
@@ -18,42 +21,46 @@ export const Header = () => {
   };
 
   const pathname = usePathname();
+  useEffect(() => {
+    const jwt = getJWT();
+    if (jwt) {
+      getMe(endpoints.me, jwt).then((userData) => {
+        if (isResponseOk(userData)) {
+          setIsAuthorized(true);
+        } else {
+          setIsAuthorized(false);
+          removeJWT();
+        }
+      });
+    }
+  });
+
   console.log(pathname);
+
+  const handleLogout = () => {
+    setIsAuthorized(false);
+    removeJWT();
+    
+  };
+
 
   return (
     <header className={Styles["header"]}>
-      {/* <Link href="./" className={Styles["logo"]}>
+      {pathname === "/" ? (
         <img
-          className={Styles["logo__image"]}
+          className={Styles["logo"]}
           src="./images/logo.svg"
           alt="Логотип Pindie"
         />
-      </Link> */}
-
-{/* className={`${Styles["menu__link"]} ${
-                pathname === "/new" ? Styles["menu__link_active"] : ""
-              }`} */}
-
-{
-  pathname === "/" ?  
-  <img 
-  className={Styles["logo"]} 
-   src="./images/logo.svg"
-   alt="Логотип Pindie"
- />
-
-: 
-<Link href="./" className={Styles["logo"]} >
- <img
-   className={Styles["logo__image"]}
-   src="./images/logo.svg"
-   alt="Логотип Pindie"
- />
-</Link>
-}
-
-
-
+      ) : (
+        <Link href="./" className={Styles["logo"]}>
+          <img
+            className={Styles["logo__image"]}
+            src="./images/logo.svg"
+            alt="Логотип Pindie"
+          />
+        </Link>
+      )}
 
       <nav className={Styles["menu"]}>
         <ul className={Styles["menu__list"]}>
@@ -78,43 +85,61 @@ export const Header = () => {
             </Link>
           </li>
           <li className={Styles["menu__item"]}>
-            <Link href="/shooters"  className={`${Styles["menu__link"]} ${
+            <Link
+              href="/shooters"
+              className={`${Styles["menu__link"]} ${
                 pathname === "/shooters" ? Styles["menu__link_active"] : ""
-              }`}>
+              }`}
+            >
               Шутеры
             </Link>
           </li>
           <li className={Styles["menu__item"]}>
-            <Link href="/runners" className={`${Styles["menu__link"]} ${
+            <Link
+              href="/runners"
+              className={`${Styles["menu__link"]} ${
                 pathname === "/runners" ? Styles["menu__link_active"] : ""
-              }`}>
+              }`}
+            >
               Ранеры
             </Link>
           </li>
           <li className={Styles["menu__item"]}>
-            <Link href="/pixel-games" className={`${Styles["menu__link"]} ${
+            <Link
+              href="/pixel-games"
+              className={`${Styles["menu__link"]} ${
                 pathname === "/pixel-games" ? Styles["menu__link_active"] : ""
-              }`}>
+              }`}
+            >
               Пиксельные
             </Link>
           </li>
           <li className={Styles["menu__item"]}>
-            <Link href="/tds" className={`${Styles["menu__link"]} ${
+            <Link
+              href="/tds"
+              className={`${Styles["menu__link"]} ${
                 pathname === "/tds" ? Styles["menu__link_active"] : ""
-              }`}>
+              }`}
+            >
               TDS
             </Link>
           </li>
         </ul>
         <div className={Styles["auth"]}>
-          <button className={Styles["auth__button"]} onClick={openPopup}>
-            Войти
-          </button>
+          {isAuthorized ? (
+            <button className={Styles["auth__button"]} onClick={handleLogout}>
+              Выйти
+            </button>
+          ) : (
+            <button className={Styles["auth__button"]} onClick={openPopup}>
+              Войти
+            </button>
+          )}
         </div>
       </nav>
       <Overlay isOpened={popupIsOpened} closePopup={closePopup} />
       <Popup isOpened={popupIsOpened} closePopup={closePopup}>
-        <AuthForm />
+        <AuthForm close={closePopup} setAuth={setIsAuthorized} />
       </Popup>
     </header>
   );

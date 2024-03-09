@@ -53,6 +53,10 @@
   transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
 }
 
+.form__message {
+  margin-bottom: 20px;
+} 
+
 .form__reset:hover {
   color: yellow;
   background-color: #000;

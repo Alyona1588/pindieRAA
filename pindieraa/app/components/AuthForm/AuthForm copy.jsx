@@ -1,7 +1,6 @@
-"use client"
 import Styles from "./AuthForm.module.css";
 import { endpoints } from "@/app/api/config";
-import { authorize, getMe, isResponseOk, removeJWT, setJWT } from "@/app/api/api-utils";
+import { authorize, isResponseOk } from "@/app/api/api-utils";
 import { useEffect, useState } from "react";
 
 export const AuthForm = (props) => {
@@ -10,35 +9,45 @@ export const AuthForm = (props) => {
   const [message, setMessage] = useState({ status: null, text: null });
 
   const handleInput = (e) => {
+    /* 
+      В объекте authData по ключу e.target.name находится 
+      изменяемое значение и перезаписывается
+      новым текстом из поля ввода (e.target.value). 
+      Спред ... перед authData нужен, чтобы сохранить
+      данные, не изменившиеся при вводе текста в одном из полей
+  */
     setAuthData({ ...authData, [e.target.name]: e.target.value });
     console.log(authData);
   };
   
   const handleSubmit = async (e) => {
+    /* Предотвращаем стандартное поведение формы */
     e.preventDefault();
+    /* Вызываем функцию authorize с данными из формы */
     const userData = await authorize(endpoints.auth, authData);
+    /* Проверяем ответ сервера с помощью isResponseOk */
     if (isResponseOk(userData)) {
-      await getMe(endpoints.me, userData.jwt);
+      /* Записываем в стейт данные пользователя с сервера */
       setUserData(userData);
       console.log(userData);
-      setJWT(userData.jwt);
+      /*  */
       props.setAuth(true);
+      /* Записываем сообщение об авторизации */
       setMessage({ status: "success", text: "Вы авторизовались!" });
       console.log (message);
     } else {
+      /* Записываем сообщение об ошибке */
       setMessage({ status: "error", text: "Неверные почта или пароль" });
     }
-
-    return () => (console.log (message))
-          
   };
 
   useEffect(() => {
     let timer;
     if (userData) {
       timer = setTimeout(() => {
+        /* В props close лежит функция закрытия попапа */
         props.close();
-      }, 1000);
+      }, 3000);
     }
     return () => clearTimeout(timer);
   }, [userData]);
@@ -72,7 +81,7 @@ export const AuthForm = (props) => {
       </div>
       <div className={Styles["form__actions"]}>
         <p className={Styles["form__message"]}>
-           {message.status && (
+          Текст с сообщением об авторизации {message.status && (
             <p className={Styles["form__message"]}>{message.text}</p>
           )}
         </p>
