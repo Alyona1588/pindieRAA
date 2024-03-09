@@ -5,8 +5,6 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { GameNotFound } from "@/app/components/GameNotFound/GameNotFound";
 import {
-  getJWT,
-  getMe,
   getNormalizedGameDataById,
   isResponseOk,
   vote,
@@ -14,81 +12,64 @@ import {
 import { endpoints } from "@/app/api/config";
 import { Preloader } from "@/app/components/Preloader/Preloader";
 import { checkIfUserVoted } from "@/app/api/api-utils";
+import { useStore } from "@/app/store/app-store";
 
 
 export default function GamePage(props) {
+  const authContext = useStore();
   const router = useRouter();
   const [game, setGame] = useState("");
   const [preloaderVisible, setPreloaderVisible] = useState(true);
 
   const [isVoted, setIsVoted] = useState(false);
 
-  const [isAuthorized, setIsAuthorized] = useState(false);
-  const [currentUser, setCurrentUser] = useState("null");
-
-  useEffect(() => {
-    const jwt = getJWT();
-    if (jwt) {
-      getMe(endpoints.me, jwt).then((userData) => {
-        if (isResponseOk(userData)) {
-          setIsAuthorized(true);
-          setCurrentUser(userData);
-        } else {
-          setIsAuthorized(false);
-          removeJWT();
-        }
-      });
-    }
-  });
+  useEffect(() => {});
 
   useEffect(() => {
     async function fetchData() {
+      setPreloaderVisible(true);
       const game = await getNormalizedGameDataById(
         endpoints.games,
         props.params.id
       );
-      console.log(game);
       isResponseOk(game) ? setGame(game) : setGame(null);
       setPreloaderVisible(false);
     }
-
     fetchData();
   }, []);
 
   useEffect(() => {
-    if (currentUser && game) {
-      setIsVoted(checkIfUserVoted(game, currentUser.id));
-    } else {
-      setIsVoted(false);
-    }
-    // return checkIfUserVoted;
-  }, [currentUser, game]);
+    // Данные о пользователе получаем из контекста authContext.user
+    authContext.user && game
+      ? setIsVoted(checkIfUserVoted(game, authContext.user.id))
+      : setIsVoted(false);
+  }, [authContext.user, game]);
 
   const handleVote = async () => {
-    const jwt = getJWT();
-  let usersIdArray = game.users.length
+    const jwt = authContext.token; // Данные о токене получаем из контекста
+    let usersIdArray = game.users.length
       ? game.users.map((user) => user.id)
-    : [];
-  usersIdArray.push(currentUser.id);
-  const response = await vote(
+      : [];
+    usersIdArray.push(currentUser.id); // Данные о пользователе получаем из контекст
+    const response = await vote(
       `${endpoints.games}/${game.id}`,
-    jwt,
-    usersIdArray
-  );
-  if (isResponseOk(response)) {
-      setIsVoted(true);
-    setGame(() => {
+      jwt,
+      usersIdArray
+    );
+    if (isResponseOk(response)) {
+     setGame(() => {
         return {
           ...game,
-        users: [...game.users, currentUser],
-      };
-    });
-  }
-};
+              // Данные о пользователе получаем из контекста
+          users: [...game.users, authContext.user],
+          users_permissions_users: 
+          [...game.users_permissions_users, authContext.user],
 
-
-
-
+        };
+      });
+      setIsVoted(true);
+    }
+  };
 
   return (
     <main className="main">
@@ -117,24 +98,13 @@ export default function GamePage(props) {
                   {game.users.length}
                 </span>
               </p>
-
-              {/* <button
-                disabled={!isAuthorized}
-                className={`button ${Styles["about__vote-button"]}`}
-                type="button"
-                onClick={() => router.push("/AuthForm")}
-              >
-                Голосовать
-              </button> */}
-             
               <button
-                disabled={!isAuthorized || isVoted}
+                disabled={!authContext.isAuth || isVoted}
                 className={`button ${Styles["about__vote-button"]}`}
                 onClick={handleVote}
               >
                 {isVoted ? "Голос учтён" : "Голосовать"}
               </button>
-
             </div>
           </section>
         </>
