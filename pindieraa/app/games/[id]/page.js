@@ -1,14 +1,31 @@
-"use client"
-import { useRouter } from 'next/navigation';
-import { getGameById } from "@/app/data/data-utils";
+"use client";
 import Styles from "./Game.module.css";
-import {GameNotFound} from "@/app/components/GameNotFound/GameNotFound";
-
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useState } from "react";
+import { GameNotFound } from "@/app/components/GameNotFound/GameNotFound";
+import { getNormalizedGameDataById, isResponseOk } from "@/app/api/api-utils";
+import { endpoints } from "@/app/api/config";
+import { Preloader } from "@/app/components/Preloader/Preloader";
 
 export default function GamePage(props) {
   const router = useRouter();
-  const game = getGameById(props.params.id);
- 
+  const [game, setGame] = useState(""); 
+  const [preloaderVisible, setPreloaderVisible] = useState(true); 
+  
+  useEffect(() => {
+    async function fetchData() {
+      const game = await getNormalizedGameDataById(
+        endpoints.games,
+        props.params.id
+      );
+      console.log(game);
+      isResponseOk(game) ? setGame(game) : setGame(null);
+      setPreloaderVisible(false);
+    }
+
+    fetchData();
+  }, []);
 
   return (
     <main className="main">
@@ -37,14 +54,20 @@ export default function GamePage(props) {
                   {game.users.length}
                 </span>
               </p>
-             
-              <button type="button" onClick={() => router.push('/AuthForm')} className={`button ${Styles["about__vote-button"]}`}>Голосовать</button>
-             
- 
+
+              <button
+                type="button"
+                onClick={() => router.push("/AuthForm")}
+                className={`button ${Styles["about__vote-button"]}`}
+              >
+                Голосовать
+              </button>
             </div>
           </section>
         </>
-      ) : (
+      ) : preloaderVisible ? (
+        <Preloader />
+    ) : (
         <section className={Styles["game"]}>
           <GameNotFound />
         </section>
