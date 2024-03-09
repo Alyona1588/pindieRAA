@@ -4,15 +4,43 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useState } from "react";
 import { GameNotFound } from "@/app/components/GameNotFound/GameNotFound";
-import { getNormalizedGameDataById, isResponseOk } from "@/app/api/api-utils";
+import {
+  getJWT,
+  getMe,
+  getNormalizedGameDataById,
+  isResponseOk,
+  vote,
+} from "@/app/api/api-utils";
 import { endpoints } from "@/app/api/config";
 import { Preloader } from "@/app/components/Preloader/Preloader";
+import { checkIfUserVoted } from "@/app/api/api-utils";
+
 
 export default function GamePage(props) {
   const router = useRouter();
-  const [game, setGame] = useState(""); 
-  const [preloaderVisible, setPreloaderVisible] = useState(true); 
-  
+  const [game, setGame] = useState("");
+  const [preloaderVisible, setPreloaderVisible] = useState(true);
+
+  const [isVoted, setIsVoted] = useState(false);
+
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [currentUser, setCurrentUser] = useState("null");
+
+  useEffect(() => {
+    const jwt = getJWT();
+    if (jwt) {
+      getMe(endpoints.me, jwt).then((userData) => {
+        if (isResponseOk(userData)) {
+          setIsAuthorized(true);
+          setCurrentUser(userData);
+        } else {
+          setIsAuthorized(false);
+          removeJWT();
+        }
+      });
+    }
+  });
+
   useEffect(() => {
     async function fetchData() {
       const game = await getNormalizedGameDataById(
@@ -26,6 +54,41 @@ export default function GamePage(props) {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (currentUser && game) {
+      setIsVoted(checkIfUserVoted(game, currentUser.id));
+    } else {
+      setIsVoted(false);
+    }
+    // return checkIfUserVoted;
+  }, [currentUser, game]);
+
+  const handleVote = async () => {
+    const jwt = getJWT();
+  let usersIdArray = game.users.length
+      ? game.users.map((user) => user.id)
+    : [];
+  usersIdArray.push(currentUser.id);
+  const response = await vote(
+      `${endpoints.games}/${game.id}`,
+    jwt,
+    usersIdArray
+  );
+  if (isResponseOk(response)) {
+      setIsVoted(true);
+    setGame(() => {
+        return {
+          ...game,
+        users: [...game.users, currentUser],
+      };
+    });
+  }
+};
+
+
+
+
 
   return (
     <main className="main">
@@ -55,19 +118,29 @@ export default function GamePage(props) {
                 </span>
               </p>
 
-              <button
+              {/* <button
+                disabled={!isAuthorized}
+                className={`button ${Styles["about__vote-button"]}`}
                 type="button"
                 onClick={() => router.push("/AuthForm")}
-                className={`button ${Styles["about__vote-button"]}`}
               >
                 Голосовать
+              </button> */}
+             
+              <button
+                disabled={!isAuthorized || isVoted}
+                className={`button ${Styles["about__vote-button"]}`}
+                onClick={handleVote}
+              >
+                {isVoted ? "Голос учтён" : "Голосовать"}
               </button>
+
             </div>
           </section>
         </>
       ) : preloaderVisible ? (
         <Preloader />
-    ) : (
+      ) : (
         <section className={Styles["game"]}>
           <GameNotFound />
         </section>
