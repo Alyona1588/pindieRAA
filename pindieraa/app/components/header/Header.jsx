@@ -35,11 +35,11 @@ export const Header = () => {
           alt="Логотип Pindie"
         />
       ) : (
-        <Link href="./" className={Styles["logo"]}>
+        <Link href="/" className={Styles["logo"]}>
           <img
             className={Styles["logo__image"]}
             src="./images/logo.svg"
-            alt="Логотип Pindie"
+            alt="ЛоготипЧЧИИКК Pindie"
           />
         </Link>
       )}
@@ -108,7 +108,6 @@ export const Header = () => {
           </li>
         </ul>
         <div className={Styles["auth"]}>
-         
           {authContext.isAuth ? (
             <button className={Styles["auth__button"]} onClick={handleLogout}>
               Выйти
@@ -118,7 +117,6 @@ export const Header = () => {
               Войти
             </button>
           )}
-          
         </div>
       </nav>
       <Overlay isOpened={popupIsOpened} closePopup={closePopup} />

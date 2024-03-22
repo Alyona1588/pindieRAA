@@ -50,7 +50,10 @@ export default function GamePage(props) {
     let usersIdArray = game.users.length
       ? game.users.map((user) => user.id)
       : [];
-    usersIdArray.push(currentUser.id); // Данные о пользователе получаем из контекст
+    usersIdArray.push(
+      authContext.user
+      
+      ); // Данные о пользователе получаем из контекст
     const response = await vote(
       `${endpoints.games}/${game.id}`,
       jwt,
@@ -70,7 +73,7 @@ export default function GamePage(props) {
       setIsVoted(true);
     }
   };
-
+  
   return (
     <main className="main">
       {game ? (
