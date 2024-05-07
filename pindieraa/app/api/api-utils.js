@@ -51,10 +51,10 @@ export const getNormalizedGamesDataByCategory = async (url, category) => {
   const data = await getData(`${url}?categories.name=${category}`);
   //  console.log(data);
   // Применяем функцию нормализации для работы с массивом
-  console.log("data = ");
-  console.log(data);
+  // console.log(`data по category = ${category}   ${data} `);
+  // console.log(data);
 
-  //return isResponseOk(data) ? normalizeData(data) : data;
+  return isResponseOk(data) ? normalizeData(data) : data;
 };
 
 export const getNormalizedGameDataById = async (url, id) => {
