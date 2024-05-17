@@ -1,7 +1,7 @@
 "use client";
 
-import { Header } from "./components/Header/Header";
-import { Footer } from "./components/Footer/Footer";
+import { Header } from "./components/header/Header";
+import { Footer } from "./components/footer/footer";
 import { useEffect } from "react";
 import { useStore } from "./store/app-store";
 
