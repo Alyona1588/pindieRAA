@@ -3,8 +3,10 @@
 
 // УРЛ локальный
 //export const BASE_URL = "http://localhost:3001/api"; // для локального сервера
+
+// URL для продуктива
 export const BASE_URL =
-  "https://shuremanochka.nomoredomainswork.ru/admin/dashboard"; // для продуктива
+  "https://shuremanochka-backend.nomoredomainswork.ru/admin/dashboard";
 
 export const endpoints = {
   games: `${BASE_URL}/games`,

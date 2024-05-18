@@ -52,9 +52,16 @@ export const getNormalizedGamesDataByCategory = async (url, category) => {
   //  console.log(data);
   // Применяем функцию нормализации для работы с массивом
   // console.log(`data по category = ${category}   ${data} `);
+  // console.log("СООБЩЕНИЕ_____________________");
   // console.log(data);
 
-  return isResponseOk(data) ? normalizeData(data) : data;
+  //было так, но в случае если массив не приходил или был пустой выпадала ошибка
+  // return isResponseOk(data) ? normalizeData(data) : data;
+
+  // Проверка массива пакета data что он является массивом
+  if (Array.isArray(data)) {
+    return isResponseOk(data) ? normalizeData(data) : data;
+  }
 };
 
 export const getNormalizedGameDataById = async (url, id) => {
