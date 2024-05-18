@@ -6,7 +6,7 @@
 
 // URL для продуктива
 export const BASE_URL =
-  "https://shuremanochka-backend.nomoredomainswork.ru/admin/dashboard";
+  "https://shuremanochka-backend.nomoredomainswork.ru/api";
 
 export const endpoints = {
   games: `${BASE_URL}/games`,
