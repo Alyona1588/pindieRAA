@@ -86,7 +86,7 @@ export const data = [
     title: "Defence of Crystal",
     developer: "MastWe",
     description:
-      'Защищай магический кристалл от монстров и уничтожай кладбища, чтобы спасти Землю, которую поглотил мрак.',
+      "Защищай магический кристалл от монстров и уничтожай кладбища, чтобы спасти Землю, которую поглотил мрак.",
     image:
       "https://code.s3.yandex.net/teens/pindie-games/defence-of-crystal/cover.png",
     link: "https://code.s3.yandex.net/teens/pindie-games/defence-of-crystal/game/index.html",
@@ -127,7 +127,7 @@ export const data = [
     title: "Go Away",
     developer: "Mahisto",
     description:
-      'Управляй автомобилем, избегая аварий и перепрыгивая препятствия на пути к следующему уровню.',
+      "Управляй автомобилем, избегая аварий и перепрыгивая препятствия на пути к следующему уровню.",
     image: "https://code.s3.yandex.net/teens/pindie-games/go-away/cover.jpg",
     link: "https://code.s3.yandex.net/teens/pindie-games/go-away/game/index.html",
     category: [
@@ -243,7 +243,8 @@ export const data = [
     id: 7,
     title: "Square Slayer",
     developer: "niclan",
-    description: "Уворачивайся и отстреливайся от озлобленных квадратов и собирай жизни для перехода на следующий уровень.",
+    description:
+      "Уворачивайся и отстреливайся от озлобленных квадратов и собирай жизни для перехода на следующий уровень.",
     image:
       "https://code.s3.yandex.net/teens/pindie-games/square-slayer/cover.png",
     link: "https://code.s3.yandex.net/teens/pindie-games/square-slayer/game/index.html",
