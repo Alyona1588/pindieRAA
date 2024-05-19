@@ -14,7 +14,6 @@ import { Preloader } from "@/app/components/Preloader/Preloader";
 import { checkIfUserVoted } from "@/app/api/api-utils";
 import { useStore } from "@/app/store/app-store";
 
-
 export default function GamePage(props) {
   const authContext = useStore();
   const router = useRouter();
@@ -23,7 +22,7 @@ export default function GamePage(props) {
 
   const [isVoted, setIsVoted] = useState(false);
 
-  useEffect(() => {});
+  // useEffect(() => {});
 
   useEffect(() => {
     async function fetchData() {
@@ -39,41 +38,51 @@ export default function GamePage(props) {
   }, []);
 
   useEffect(() => {
+    console.log("authContext.user =");
+    console.log(authContext.user);
+
     // Данные о пользователе получаем из контекста authContext.user
     authContext.user && game
-      ? setIsVoted(checkIfUserVoted(game, authContext.user.id))
+      ? setIsVoted(checkIfUserVoted(game, authContext.user._id))
       : setIsVoted(false);
   }, [authContext.user, game]);
 
   const handleVote = async () => {
+    console.log("СООБЩЕНИЕ--------------------handleVote начало");
+    console.log("usersIdArray =");
+    // console.log(usersIdArray);
+
+    console.log("authContext.user =");
+    console.log(authContext.user);
+
     const jwt = authContext.token; // Данные о токене получаем из контекста
     let usersIdArray = game.users.length
       ? game.users.map((user) => user.id)
       : [];
-    usersIdArray.push(
-      authContext.user
-      
-      ); // Данные о пользователе получаем из контекст
+    usersIdArray.push(authContext.user); // Данные о пользователе получаем из контекст
     const response = await vote(
       `${endpoints.games}/${game.id}`,
       jwt,
       usersIdArray
     );
     if (isResponseOk(response)) {
-     setGame(() => {
+      console.log("СООБЩЕНИЕ_________response_____");
+      console.log(response);
+      console.log("authContext.user");
+      console.log(authContext.user);
+
+      setGame(() => {
         return {
           ...game,
-              // Данные о пользователе получаем из контекста
+          // Данные о пользователе получаем из контекста
           users: [...game.users, authContext.user],
-          users_permissions_users: 
-          [...game.users_permissions_users, authContext.user],
-
+          users_permissions_users: [...game.users, authContext.user],
         };
       });
       setIsVoted(true);
     }
   };
-  
+
   return (
     <main className="main">
       {game ? (
