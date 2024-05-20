@@ -45,7 +45,7 @@ export const Promo = () => {
         </button>
       </div>
       <img
-        src="./images/promo-illustration.svg"
+        src="/images/promo-illustration.svg"
         alt="Собака"
         className={Styles["promo__image"]}
       />

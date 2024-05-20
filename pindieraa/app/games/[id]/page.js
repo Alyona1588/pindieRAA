@@ -41,6 +41,9 @@ export default function GamePage(props) {
     console.log("authContext.user =");
     console.log(authContext.user);
 
+    //  console.log("game =");
+    //  console.log(game);
+
     // Данные о пользователе получаем из контекста authContext.user
     authContext.user && game
       ? setIsVoted(checkIfUserVoted(game, authContext.user._id))

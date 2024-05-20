@@ -31,14 +31,14 @@ export const Header = () => {
       {pathname === "/" ? (
         <img
           className={Styles["logo"]}
-          src="./images/logo.svg"
+          src="/images/logo.svg"
           alt="Логотип Pindie"
         />
       ) : (
         <Link href="/" className={Styles["logo"]}>
           <img
             className={Styles["logo__image"]}
-            src="./images/logo.svg"
+            src="/images/logo.svg"
             alt="ЛоготипЧЧИИКК Pindie"
           />
         </Link>
